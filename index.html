@@ -50,32 +50,32 @@ body{background:var(--bg);color:var(--text);font-family:'DM Mono',monospace;font
 .tab{flex:1;min-width:60px;padding:8px 4px;text-align:center;font-size:11px;letter-spacing:.04em;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;transition:color .2s,border-color .2s;white-space:nowrap}
 .tab.active{color:var(--green);border-bottom-color:var(--green)}
 .main{padding:16px;padding-bottom:env(safe-area-inset-bottom,32px)}
-.view{display:none}
-.view.active{display:block}
+.view{display:none}.view.active{display:block}
 .sync-bar{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:14px;font-size:11px;color:var(--text3);transition:background .2s,border-color .2s}
 .sync-dot{width:6px;height:6px;border-radius:50%;background:var(--text3);flex-shrink:0}
-.sync-dot.connected{background:var(--green)}
-.sync-dot.syncing{background:var(--amber);animation:pulse 1s infinite}
-.sync-dot.error{background:var(--red)}
+.sync-dot.connected{background:var(--green)}.sync-dot.syncing{background:var(--amber);animation:pulse 1s infinite}.sync-dot.error{background:var(--red)}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 .sync-btn{margin-left:auto;padding:4px 10px;background:var(--green-dim);border:1px solid var(--green-border);border-radius:6px;color:var(--green);font-size:10px;letter-spacing:.04em;cursor:pointer;font-family:'DM Mono',monospace}
 .metrics-row{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:14px}
 .metric-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:12px;transition:background .2s,border-color .2s}
 .metric-label{font-size:10px;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px}
 .metric-value{font-family:'Fraunces',serif;font-size:26px;font-weight:300;color:var(--text);line-height:1;margin-bottom:2px}
-.metric-value.green{color:var(--green)}
-.metric-value.amber{color:var(--amber)}
+.metric-value.green{color:var(--green)}.metric-value.amber{color:var(--amber)}
 .metric-sub{font-size:10px;color:var(--text3)}
 .section-title{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin:18px 0 8px}
 .card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px;margin-bottom:8px;transition:background .2s,border-color .2s}
 .card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
 .card-date{font-size:12px;color:var(--text);font-weight:500}
+.card-actions{display:flex;gap:6px;align-items:center}
 .tag{font-size:10px;padding:3px 8px;border-radius:20px;letter-spacing:.04em;font-weight:500}
 .tag-stair{background:var(--blue-dim);color:var(--blue);border:1px solid rgba(107,159,212,0.2)}
 .tag-pack{background:var(--amber-dim);color:var(--amber);border:1px solid rgba(212,168,67,0.2)}
 .tag-lift{background:var(--red-dim);color:var(--red);border:1px solid rgba(201,107,90,0.2)}
 .tag-hike{background:var(--green-dim);color:var(--green);border:1px solid var(--green-border)}
 .tag-treadmill{background:rgba(138,135,128,0.1);color:var(--stone);border:1px solid rgba(138,135,128,0.2)}
+.btn-icon{background:none;border:none;cursor:pointer;font-size:12px;color:var(--text3);padding:2px 4px;border-radius:4px;font-family:'DM Mono',monospace;transition:color .15s}
+.btn-icon:hover{color:var(--text)}
+.btn-icon.del:hover{color:var(--red)}
 .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .stat-label{font-size:10px;color:var(--text3);margin-bottom:2px}
 .stat-value{font-size:13px;color:var(--text);font-weight:500}
@@ -88,9 +88,12 @@ body{background:var(--bg);color:var(--text);font-family:'DM Mono',monospace;font
 .prog-track{height:4px;background:var(--bg4);border-radius:2px;overflow:hidden}
 .prog-fill{height:100%;border-radius:2px;transition:width .5s ease}
 .form-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;margin-bottom:12px;transition:background .2s,border-color .2s}
+.form-card.editing{border-color:var(--amber);background:var(--amber-dim)}
 .form-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:10px}
 .form-col{display:flex;flex-direction:column;gap:5px}
 .form-label{font-size:10px;color:var(--text3);letter-spacing:.06em;text-transform:uppercase}
+.edit-banner{font-size:11px;color:var(--amber);margin-bottom:10px;padding:6px 8px;background:var(--amber-dim);border-radius:6px;display:none}
+.edit-banner.visible{display:block}
 input,select,textarea{background:var(--bg3);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-family:'DM Mono',monospace;font-size:13px;padding:9px 11px;width:100%;appearance:none;-webkit-appearance:none;transition:background .2s,border-color .2s,color .2s}
 input:focus,select:focus,textarea:focus{outline:none;border-color:var(--green)}
 select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23a09e99'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px}
@@ -99,6 +102,7 @@ input::placeholder,textarea::placeholder{color:var(--text3)}
 .btn{width:100%;padding:11px;border-radius:8px;font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.06em;cursor:pointer;border:1px solid var(--border2);background:var(--bg3);color:var(--text2);transition:all .15s}
 .btn:active{transform:scale(0.98)}
 .btn-primary{background:var(--green);border-color:var(--green);color:#fff;font-weight:500}
+.btn-cancel{background:var(--bg3);border-color:var(--border2);color:var(--text3);margin-top:8px}
 .week-row{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:6px;transition:background .2s,border-color .2s}
 .week-row.current{border-color:var(--green-border);background:var(--green-dim)}
 .week-num{font-family:'Fraunces',serif;font-size:20px;font-weight:300;color:var(--text3);width:32px;flex-shrink:0;text-align:center}
@@ -117,8 +121,7 @@ input::placeholder,textarea::placeholder{color:var(--text3)}
 .target-row:last-child{border-bottom:none}
 .target-key{font-size:11px;color:var(--text3)}
 .target-val{font-size:12px;color:var(--text);font-weight:500}
-.target-val.green{color:var(--green)}
-.target-val.amber{color:var(--amber)}
+.target-val.green{color:var(--green)}.target-val.amber{color:var(--amber)}
 .empty{text-align:center;padding:32px 16px;color:var(--text3);font-size:12px}
 ::-webkit-scrollbar{width:0;height:0}
 </style>
@@ -164,7 +167,8 @@ input::placeholder,textarea::placeholder{color:var(--text3)}
 
   <!-- LOG -->
   <div id="view-log" class="view">
-    <div class="form-card">
+    <div class="form-card" id="form-card">
+      <div class="edit-banner" id="edit-banner">Editing session — changes will sync to Drive</div>
       <div class="form-row">
         <div class="form-col">
           <span class="form-label">Session type</span>
@@ -239,7 +243,8 @@ input::placeholder,textarea::placeholder{color:var(--text3)}
         <span class="form-label">Notes</span>
         <textarea id="f-notes" rows="2" placeholder="Optional. How did it feel?"></textarea>
       </div>
-      <button class="btn btn-primary" onclick="saveSession()">Save session</button>
+      <button class="btn btn-primary" id="save-btn" onclick="saveSession()">Save session</button>
+      <button class="btn btn-cancel" id="cancel-btn" onclick="cancelEdit()" style="display:none">Cancel edit</button>
     </div>
     <div class="section-title">All sessions</div>
     <div id="all-sessions"></div>
@@ -316,15 +321,41 @@ function weekRange(w){
   const s=new Date(PLAN_START);s.setDate(s.getDate()+(w-1)*7);
   const e=new Date(s);e.setDate(e.getDate()+6);return{start:s,end:e};
 }
+
+// This week = the current 7-day window based on real calendar Mon-Sun
+function thisCalendarWeek(){
+  const now=new Date();
+  const day=now.getDay(); // 0=Sun
+  const mon=new Date(now);
+  mon.setDate(now.getDate()-(day===0?6:day-1));
+  mon.setHours(0,0,0,0);
+  const sun=new Date(mon);
+  sun.setDate(mon.getDate()+6);
+  sun.setHours(23,59,59,999);
+  return{start:mon,end:sun};
+}
+
 function fmtDate(d){return new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric'});}
 function daysToSummit(){return Math.max(0,Math.ceil((SUMMIT-new Date())/86400000));}
 
 // ── DATA ───────────────────────────────────────────────────────────────────
 let store={sessions:[]},driveFileId=null,gisClient=null,gapiReady=false;
+let editingId=null;
+
 function loadLocal(){try{store=JSON.parse(localStorage.getItem('kili_store')||'{"sessions":[]}')}catch(e){store={sessions:[]};}}
 function saveLocal(){try{localStorage.setItem('kili_store',JSON.stringify(store));}catch(e){}}
 function sessions(){return store.sessions||[];}
+
 function addSession(s){store.sessions.unshift(s);saveLocal();syncToDrive();}
+function updateSession(id,updated){
+  store.sessions=store.sessions.map(s=>s.id===id?{...s,...updated}:s);
+  saveLocal();syncToDrive();
+}
+function deleteSession(id){
+  if(!confirm('Delete this session?'))return;
+  store.sessions=store.sessions.filter(s=>s.id!==id);
+  saveLocal();syncToDrive();renderAll();
+}
 
 // ── SYNC ───────────────────────────────────────────────────────────────────
 function setSyncState(state,msg){
@@ -398,23 +429,91 @@ function updateForm(){
   const t=document.getElementById('f-type').value;
   ['stair','pack','lift','hike','tread'].forEach(id=>{document.getElementById('fields-'+id).style.display=t===id?'block':'none';});
 }
+
 function clearForm(){
-  ['s-dur','s-hr','s-cal','s-z2','s-z3','s-z4','s-z5','p-dur','p-weight','l-dur','l-hr','h-dur','h-elev','h-weight','h-hr','t-dur','t-incline','t-hr','f-notes']
+  ['s-dur','s-hr','s-cal','s-z2','s-z3','s-z4','s-z5','p-dur','p-weight',
+   'l-dur','l-hr','h-dur','h-elev','h-weight','h-hr','t-dur','t-incline','t-hr','f-notes']
   .forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('s-level').value='6';
+  document.getElementById('l-type').value='lower';
+  document.getElementById('f-date').value=new Date().toISOString().split('T')[0];
 }
+
+function startEdit(id){
+  const s=sessions().find(x=>x.id===id);
+  if(!s)return;
+  editingId=id;
+  // set type and show fields
+  document.getElementById('f-type').value=s.type;
+  updateForm();
+  document.getElementById('f-date').value=s.date;
+  document.getElementById('f-notes').value=s.notes||'';
+  if(s.type==='stair'){
+    if(s.duration)document.getElementById('s-dur').value=s.duration;
+    if(s.level)document.getElementById('s-level').value=s.level;
+    if(s.hr)document.getElementById('s-hr').value=s.hr;
+    if(s.cal)document.getElementById('s-cal').value=s.cal;
+    if(s.z2)document.getElementById('s-z2').value=s.z2;
+    if(s.z3)document.getElementById('s-z3').value=s.z3;
+    if(s.z4)document.getElementById('s-z4').value=s.z4;
+    if(s.z5)document.getElementById('s-z5').value=s.z5;
+  }else if(s.type==='pack'){
+    if(s.duration)document.getElementById('p-dur').value=s.duration;
+    if(s.weight)document.getElementById('p-weight').value=s.weight;
+  }else if(s.type==='lift'){
+    if(s.liftType)document.getElementById('l-type').value=s.liftType;
+    if(s.duration)document.getElementById('l-dur').value=s.duration;
+    if(s.hr)document.getElementById('l-hr').value=s.hr;
+  }else if(s.type==='hike'){
+    if(s.duration)document.getElementById('h-dur').value=s.duration;
+    if(s.elev)document.getElementById('h-elev').value=s.elev;
+    if(s.weight)document.getElementById('h-weight').value=s.weight;
+    if(s.hr)document.getElementById('h-hr').value=s.hr;
+  }else if(s.type==='tread'){
+    if(s.duration)document.getElementById('t-dur').value=s.duration;
+    if(s.incline)document.getElementById('t-incline').value=s.incline;
+    if(s.hr)document.getElementById('t-hr').value=s.hr;
+  }
+  document.getElementById('edit-banner').classList.add('visible');
+  document.getElementById('form-card').classList.add('editing');
+  document.getElementById('save-btn').textContent='Update session';
+  document.getElementById('cancel-btn').style.display='block';
+  document.getElementById('f-type').disabled=true;
+  switchTab('log');
+  document.getElementById('form-card').scrollIntoView({behavior:'smooth'});
+}
+
+function cancelEdit(){
+  editingId=null;
+  clearForm();
+  document.getElementById('edit-banner').classList.remove('visible');
+  document.getElementById('form-card').classList.remove('editing');
+  document.getElementById('save-btn').textContent='Save session';
+  document.getElementById('cancel-btn').style.display='none';
+  document.getElementById('f-type').disabled=false;
+}
+
 function saveSession(){
   const type=document.getElementById('f-type').value;
   const date=document.getElementById('f-date').value||new Date().toISOString().split('T')[0];
   const notes=document.getElementById('f-notes').value.trim();
-  const id=Date.now()+'-'+Math.random().toString(36).slice(2,6);
-  let s={id,type,date,notes};
+  let s={type,date,notes};
   if(type==='stair'){s.duration=+document.getElementById('s-dur').value||0;s.level=document.getElementById('s-level').value;s.hr=+document.getElementById('s-hr').value||0;s.cal=+document.getElementById('s-cal').value||0;s.z2=+document.getElementById('s-z2').value||0;s.z3=+document.getElementById('s-z3').value||0;s.z4=+document.getElementById('s-z4').value||0;s.z5=+document.getElementById('s-z5').value||0;}
   else if(type==='pack'){s.duration=+document.getElementById('p-dur').value||0;s.weight=+document.getElementById('p-weight').value||0;}
   else if(type==='lift'){s.liftType=document.getElementById('l-type').value;s.duration=+document.getElementById('l-dur').value||0;s.hr=+document.getElementById('l-hr').value||0;}
   else if(type==='hike'){s.duration=+document.getElementById('h-dur').value||0;s.elev=+document.getElementById('h-elev').value||0;s.weight=+document.getElementById('h-weight').value||0;s.hr=+document.getElementById('h-hr').value||0;}
   else if(type==='tread'){s.duration=+document.getElementById('t-dur').value||0;s.incline=+document.getElementById('t-incline').value||0;s.hr=+document.getElementById('t-hr').value||0;}
   if(!s.duration){alert('Please enter a duration.');return;}
-  addSession(s);clearForm();renderAll();switchTab('today');
+  if(editingId){
+    updateSession(editingId,s);
+    cancelEdit();
+  }else{
+    s.id=Date.now()+'-'+Math.random().toString(36).slice(2,6);
+    addSession(s);
+    clearForm();
+    switchTab('today');
+  }
+  renderAll();
 }
 
 // ── SESSION CARD ───────────────────────────────────────────────────────────
@@ -435,7 +534,18 @@ function sessionCard(s){
   }else if(s.type==='tread'){
     stats=`<div class="stats-grid"><div><div class="stat-label">Duration</div><div class="stat-value">${s.duration} min</div></div><div><div class="stat-label">Incline</div><div class="stat-value">${s.incline}%</div></div><div><div class="stat-label">Avg HR</div><div class="stat-value">${s.hr||'—'} bpm</div></div></div>`;
   }
-  return`<div class="card"><div class="card-header"><div class="card-date">${fmtDate(s.date)}</div><span class="tag ${tagCls[s.type]}">${labels[s.type]}</span></div>${stats}${zonebar}${s.notes?`<div class="card-note">${s.notes}</div>`:''}</div>`;
+  return`<div class="card">
+    <div class="card-header">
+      <div class="card-date">${fmtDate(s.date)}</div>
+      <div class="card-actions">
+        <span class="tag ${tagCls[s.type]}">${labels[s.type]}</span>
+        <button class="btn-icon" onclick="startEdit('${s.id}')" title="Edit">edit</button>
+        <button class="btn-icon del" onclick="deleteSession('${s.id}')" title="Delete">del</button>
+      </div>
+    </div>
+    ${stats}${zonebar}
+    ${s.notes?`<div class="card-note">${s.notes}</div>`:''}
+  </div>`;
 }
 
 // ── RENDER TODAY ───────────────────────────────────────────────────────────
@@ -445,13 +555,37 @@ function renderToday(){
   document.getElementById('days-out').textContent=daysToSummit();
   const niTxt=ni?`↑ to ${ni.duration} min from ${fmtDate(ni.date)}`:'Peak duration reached';
   const npTxt=np?`↑ to ${np.weight} lbs from ${fmtDate(np.date)}`:'Hold at 20–22 lbs through October';
-  document.getElementById('today-targets').innerHTML=`<div class="today-alert-title">Week <span>${w}</span> targets</div><div class="target-row"><span class="target-key">Stairmaster duration</span><span class="target-val green">${dur} min × 2</span></div><div class="target-row"><span class="target-key">Stairmaster level</span><span class="target-val">${lvl}</span></div><div class="target-row"><span class="target-key">Target HR zone</span><span class="target-val">135–145 bpm</span></div><div class="target-row"><span class="target-key">Next duration increase</span><span class="target-val amber">${niTxt}</span></div><div class="target-row"><span class="target-key">Pack weight</span><span class="target-val green">${pk} lbs</span></div><div class="target-row"><span class="target-key">Next pack increase</span><span class="target-val amber">${npTxt}</span></div>`;
-  const{start,end}=weekRange(w);
-  const tw=sessions().filter(s=>{const d=new Date(s.date);return d>=start&&d<=end;});
-  const sc=tw.filter(s=>s.type==='stair').length,pc=tw.filter(s=>s.type==='pack').length,lc=tw.filter(s=>s.type==='lift').length;
-  document.getElementById('today-metrics').innerHTML=`<div class="metric-card"><div class="metric-label">Stairmaster</div><div class="metric-value ${sc>=2?'green':''}">${sc}<span style="font-size:14px;color:var(--text3)">/2</span></div><div class="metric-sub">this week</div></div><div class="metric-card"><div class="metric-label">Lifting</div><div class="metric-value">${lc}</div><div class="metric-sub">sessions</div></div><div class="metric-card"><div class="metric-label">Pack walks</div><div class="metric-value ${pc>=5?'green':''}">${pc}<span style="font-size:14px;color:var(--text3)">/7</span></div><div class="metric-sub">this week</div></div><div class="metric-card"><div class="metric-label">Days to summit</div><div class="metric-value amber">${daysToSummit()}</div><div class="metric-sub">Feb 1, 2027</div></div>`;
+  document.getElementById('today-targets').innerHTML=`
+    <div class="today-alert-title">Week <span>${w}</span> targets</div>
+    <div class="target-row"><span class="target-key">Stairmaster duration</span><span class="target-val green">${dur} min × 2</span></div>
+    <div class="target-row"><span class="target-key">Stairmaster level</span><span class="target-val">${lvl}</span></div>
+    <div class="target-row"><span class="target-key">Target HR zone</span><span class="target-val">135–145 bpm</span></div>
+    <div class="target-row"><span class="target-key">Next duration increase</span><span class="target-val amber">${niTxt}</span></div>
+    <div class="target-row"><span class="target-key">Pack weight</span><span class="target-val green">${pk} lbs</span></div>
+    <div class="target-row"><span class="target-key">Next pack increase</span><span class="target-val amber">${npTxt}</span></div>`;
+
+  // Use real calendar week Mon-Sun
+  const{start,end}=thisCalendarWeek();
+  const tw=sessions().filter(s=>{
+    const d=new Date(s.date+'T12:00:00');
+    return d>=start&&d<=end;
+  });
+  const sc=tw.filter(s=>s.type==='stair').length;
+  const pc=tw.filter(s=>s.type==='pack').length;
+  const lc=tw.filter(s=>s.type==='lift').length;
+
+  document.getElementById('today-metrics').innerHTML=`
+    <div class="metric-card"><div class="metric-label">Stairmaster</div><div class="metric-value ${sc>=2?'green':''}">${sc}<span style="font-size:14px;color:var(--text3)">/2</span></div><div class="metric-sub">this week</div></div>
+    <div class="metric-card"><div class="metric-label">Lifting</div><div class="metric-value">${lc}</div><div class="metric-sub">sessions</div></div>
+    <div class="metric-card"><div class="metric-label">Pack walks</div><div class="metric-value ${pc>=5?'green':''}">${pc}<span style="font-size:14px;color:var(--text3)">/7</span></div><div class="metric-sub">this week</div></div>
+    <div class="metric-card"><div class="metric-label">Days to summit</div><div class="metric-value amber">${daysToSummit()}</div><div class="metric-sub">Feb 1, 2027</div></div>`;
+
   const sm=tw.filter(s=>s.type==='stair').reduce((a,s)=>a+s.duration,0),tm=dur*2;
-  document.getElementById('week-progress').innerHTML=`<div class="prog-wrap"><div class="prog-label"><span>Stairmaster volume</span><span>${sm} / ${tm} min</span></div><div class="prog-track"><div class="prog-fill" style="width:${Math.min(100,Math.round(sm/tm*100))}%;background:var(--blue)"></div></div></div><div class="prog-wrap"><div class="prog-label"><span>Stairmaster sessions</span><span>${sc} / 2</span></div><div class="prog-track"><div class="prog-fill" style="width:${Math.min(100,sc/2*100)}%;background:var(--blue)"></div></div></div><div class="prog-wrap"><div class="prog-label"><span>Pack walks</span><span>${pc} / 7</span></div><div class="prog-track"><div class="prog-fill" style="width:${Math.min(100,pc/7*100)}%;background:var(--amber)"></div></div></div>`;
+  document.getElementById('week-progress').innerHTML=`
+    <div class="prog-wrap"><div class="prog-label"><span>Stairmaster volume</span><span>${sm} / ${tm} min</span></div><div class="prog-track"><div class="prog-fill" style="width:${Math.min(100,Math.round(sm/(tm||1)*100))}%;background:var(--blue)"></div></div></div>
+    <div class="prog-wrap"><div class="prog-label"><span>Stairmaster sessions</span><span>${sc} / 2</span></div><div class="prog-track"><div class="prog-fill" style="width:${Math.min(100,sc/2*100)}%;background:var(--blue)"></div></div></div>
+    <div class="prog-wrap"><div class="prog-label"><span>Pack walks</span><span>${pc} / 7</span></div><div class="prog-track"><div class="prog-fill" style="width:${Math.min(100,pc/7*100)}%;background:var(--amber)"></div></div></div>`;
+
   const recent=sessions().slice(0,4);
   document.getElementById('recent-log').innerHTML=recent.length?recent.map(sessionCard).join(''):'<div class="empty">No sessions logged yet.<br>Tap Log to add your first one.</div>';
 }
@@ -483,9 +617,13 @@ function cc(){
 function renderProgress(){
   const all=sessions(),stair=all.filter(s=>s.type==='stair'),pack=all.filter(s=>s.type==='pack'),hikes=all.filter(s=>s.type==='hike');
   const tm=stair.reduce((a,s)=>a+s.duration,0),hrArr=stair.filter(s=>s.hr),avgHR=hrArr.length?Math.round(hrArr.reduce((a,s)=>a+s.hr,0)/hrArr.length):0;
-  document.getElementById('progress-metrics').innerHTML=`<div class="metric-card"><div class="metric-label">Stairmaster sessions</div><div class="metric-value">${stair.length}</div></div><div class="metric-card"><div class="metric-label">Total stair minutes</div><div class="metric-value">${tm}</div></div><div class="metric-card"><div class="metric-label">Avg stair HR</div><div class="metric-value ${avgHR&&avgHR<=145&&avgHR>=135?'green':''}">${avgHR||'—'}</div><div class="metric-sub">target 135–145</div></div><div class="metric-card"><div class="metric-label">Hikes logged</div><div class="metric-value">${hikes.length}</div></div>`;
+  document.getElementById('progress-metrics').innerHTML=`
+    <div class="metric-card"><div class="metric-label">Stairmaster sessions</div><div class="metric-value">${stair.length}</div></div>
+    <div class="metric-card"><div class="metric-label">Total stair minutes</div><div class="metric-value">${tm}</div></div>
+    <div class="metric-card"><div class="metric-label">Avg stair HR</div><div class="metric-value ${avgHR&&avgHR<=145&&avgHR>=135?'green':''}">${avgHR||'—'}</div><div class="metric-sub">target 135–145</div></div>
+    <div class="metric-card"><div class="metric-label">Hikes logged</div><div class="metric-value">${hikes.length}</div></div>`;
   const c=cc();
-  const wv={};stair.forEach(s=>{const wk=Math.ceil((new Date(s.date)-PLAN_START)/(7*86400000));wv[wk]=(wv[wk]||0)+s.duration;});
+  const wv={};stair.forEach(s=>{const wk=Math.ceil((new Date(s.date+'T12:00:00')-PLAN_START)/(7*86400000));wv[wk]=(wv[wk]||0)+s.duration;});
   const wk=Object.keys(wv).map(Number).sort((a,b)=>a-b);
   buildChart('chart-vol','bar',{labels:wk.map(w=>'Wk '+w),datasets:[{label:'Min',data:wk.map(w=>wv[w]),backgroundColor:c.blue,borderRadius:3}]},{scales:{y:{beginAtZero:true,ticks:{color:c.tick,callback:v=>v+'m'},grid:{color:c.grid}},x:{ticks:{color:c.tick,font:{size:10}},grid:{display:false}}},plugins:{legend:{display:false}}});
   const hrd=stair.filter(s=>s.hr).slice().reverse();
@@ -502,13 +640,15 @@ function buildChart(id,type,data,opts){
   charts[id]=new Chart(canvas,{type,data,options:{responsive:true,maintainAspectRatio:false,...opts,plugins:{legend:{display:false},...(opts.plugins||{})}}});
 }
 
-// ── INIT ───────────────────────────────────────────────────────────────────
+// ── RENDER ALL ─────────────────────────────────────────────────────────────
 function renderAll(){
   renderToday();
   if(document.getElementById('view-progress').classList.contains('active'))renderProgress();
   if(document.getElementById('view-schedule').classList.contains('active'))renderSchedule();
   if(document.getElementById('view-log').classList.contains('active'))renderAllSessions();
 }
+
+// ── INIT ───────────────────────────────────────────────────────────────────
 document.getElementById('f-date').value=new Date().toISOString().split('T')[0];
 loadLocal();setSyncState('disconnected','Not connected — data saved locally');renderAll();
 if(CLIENT_ID)loadGIS();
