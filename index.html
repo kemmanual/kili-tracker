@@ -338,7 +338,7 @@ function thisCalendarWeek(){
   return{start:mon,end:sun};
 }
 
-function fmtDate(d){return new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric'});}
+function fmtDate(d){const p=String(d).split('-');if(p.length===3)return new Date(+p[0],+p[1]-1,+p[2]).toLocaleDateString('en-US',{month:'short',day:'numeric'});return new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric'});}
 function daysToSummit(){return Math.max(0,Math.ceil((SUMMIT-new Date())/86400000));}
 
 // ── DATA ───────────────────────────────────────────────────────────────────
