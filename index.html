@@ -495,7 +495,7 @@ function cancelEdit(){
 
 function saveSession(){
   const type=document.getElementById('f-type').value;
-  const date=document.getElementById('f-date').value||new Date().toISOString().split('T')[0];
+  const date=document.getElementById('f-date').value||[new Date().getFullYear(),String(new Date().getMonth()+1).padStart(2,'0'),String(new Date().getDate()).padStart(2,'0')].join('-')
   const notes=document.getElementById('f-notes').value.trim();
   let s={type,date,notes};
   if(type==='stair'){s.duration=+document.getElementById('s-dur').value||0;s.level=document.getElementById('s-level').value;s.hr=+document.getElementById('s-hr').value||0;s.cal=+document.getElementById('s-cal').value||0;s.z2=+document.getElementById('s-z2').value||0;s.z3=+document.getElementById('s-z3').value||0;s.z4=+document.getElementById('s-z4').value||0;s.z5=+document.getElementById('s-z5').value||0;}
@@ -649,7 +649,7 @@ function renderAll(){
 }
 
 // ── INIT ───────────────────────────────────────────────────────────────────
-document.getElementById('f-date').value=new Date().toISOString().split('T')[0];
+document.getElementById('f-date').value=[new Date().getFullYear(),String(new Date().getMonth()+1).padStart(2,'0'),String(new Date().getDate()).padStart(2,'0')].join('-');
 loadLocal();setSyncState('disconnected','Not connected — data saved locally');renderAll();
 if(CLIENT_ID)loadGIS();
 </script>
