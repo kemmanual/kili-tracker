@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Kili Tracker">
+<title>Kili Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;1,9..144,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0e0f0d;
+  --bg2: #161714;
+  --bg3: #1e1f1c;
+  --bg4: #262724;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --text: #e8e6df;
+  --text2: #9a9890;
+  --text3: #5a5956;
+  --green: #7cbd6b;
+  --green-dim: rgba(124,189,107,0.12);
+  --green-border: rgba(124,189,107,0.25);
+  --amber: #d4a843;
+  --amber-dim: rgba(212,168,67,0.1);
+  --red: #c96b5a;
+  --red-dim: rgba(201,107,90,0.1);
+  --blue: #6b9fd4;
+  --blue-dim: rgba(107,159,212,0.1);
+  --stone: #8a8780;
+  --radius: 10px;
+  --radius-lg: 16px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── HEADER ── */
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 16px 0;
+}
+
+.header-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.app-title {
+  font-family: 'Fraunces', serif;
+  font-size: 20px;
+  font-weight: 300;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+
+.app-title span { color: var(--green); font-style: italic; }
+
+.summit-badge {
+  font-size: 10px;
+  color: var(--text3);
+  letter-spacing: .06em;
+}
+
+.summit-badge strong { color: var(--amber); font-weight: 500; }
+
+/* ── TABS ── */
+.tabs {
+  display: flex;
+  gap: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.tabs::-webkit-scrollbar { display: none; }
+
+.tab {
+  flex: 1;
+  min-width: 60px;
+  padding: 8px 4px;
+  text-align: center;
+  font-size: 11px;
+  letter-spacing: .04em;
+  color: var(--text3);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: color .2s, border-color .2s;
+  white-space: nowrap;
+}
+.tab.active { color: var(--green); border-bottom-color: var(--green); }
+
+/* ── MAIN ── */
+.main { padding: 16px; padding-bottom: 32px; }
+.view { display: none; }
+.view.active { display: block; }
+
+/* ── SYNC STATUS ── */
+.sync-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 14px;
+  font-size: 11px;
+  color: var(--text3);
+}
+.sync-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--text3);
+  flex-shrink: 0;
+}
+.sync-dot.connected { background: var(--green); }
+.sync-dot.syncing { background: var(--amber); animation: pulse 1s infinite; }
+.sync-dot.error { background: var(--red); }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+.sync-connect-btn {
+  margin-left: auto;
+  padding: 4px 10px;
+  background: var(--green-dim);
+  border: 1px solid var(--green-border);
+  border-radius: 6px;
+  color: var(--green);
+  font-size: 10px;
+  letter-spacing: .04em;
+  cursor: pointer;
+  font-family: 'DM Mono', monospace;
+}
+
+/* ── METRICS ROW ── */
+.metrics-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.metric-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px;
+}
+.metric-label {
+  font-size: 10px;
+  color: var(--text3);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.metric-value {
+  font-family: 'Fraunces', serif;
+  font-size: 26px;
+  font-weight: 300;
+  color: var(--text);
+  line-height: 1;
+  margin-bottom: 2px;
+}
+.metric-value.green { color: var(--green); }
+.metric-value.amber { color: var(--amber); }
+.metric-sub { font-size: 10px; color: var(--text3); }
+
+/* ── SECTION TITLE ── */
+.section-title {
+  font-size: 10px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin: 18px 0 8px;
+}
+
+/* ── CARDS ── */
+.card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 14px;
+  margin-bottom: 8px;
+}
+.card.highlight { border-color: var(--green-border); background: var(--green-dim); }
+.card.amber { border-color: rgba(212,168,67,0.3); background: var(--amber-dim); }
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+.card-date {
+  font-size: 12px;
+  color: var(--text);
+  font-weight: 500;
+}
+.card-date small { font-weight: 400; color: var(--text3); display: block; font-size: 10px; margin-top: 1px; }
+
+.tag {
+  font-size: 10px;
+  padding: 3px 8px;
+  border-radius: 20px;
+  letter-spacing: .04em;
+  font-weight: 500;
+}
+.tag-stair { background: var(--blue-dim); color: var(--blue); border: 1px solid rgba(107,159,212,0.2); }
+.tag-pack { background: var(--amber-dim); color: var(--amber); border: 1px solid rgba(212,168,67,0.2); }
+.tag-lift { background: var(--red-dim); color: var(--red); border: 1px solid rgba(201,107,90,0.2); }
+.tag-hike { background: var(--green-dim); color: var(--green); border: 1px solid var(--green-border); }
+.tag-treadmill { background: rgba(138,135,128,0.1); color: var(--stone); border: 1px solid rgba(138,135,128,0.2); }
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.stat-label { font-size: 10px; color: var(--text3); margin-bottom: 2px; }
+.stat-value { font-size: 13px; color: var(--text); font-weight: 500; }
+
+.card-note {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+  font-size: 11px;
+  color: var(--text2);
+  font-style: italic;
+}
+
+/* ── ZONE BAR ── */
+.zone-bar {
+  display: flex;
+  height: 6px;
+  border-radius: 3px;
+  overflow: hidden;
+  margin-top: 8px;
+  gap: 1px;
+}
+.zone-seg { height: 100%; border-radius: 1px; }
+
+/* ── PROGRESS BAR ── */
+.prog-wrap { margin-bottom: 10px; }
+.prog-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--text2);
+  margin-bottom: 4px;
+}
+.prog-label span:last-child { color: var(--text3); }
+.prog-track {
+  height: 4px;
+  background: var(--bg4);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.prog-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width .5s ease;
+}
+
+/* ── FORM ── */
+.form-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  margin-bottom: 12px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.form-col { display: flex; flex-direction: column; gap: 5px; }
+.form-label { font-size: 10px; color: var(--text3); letter-spacing: .06em; text-transform: uppercase; }
+
+input, select, textarea {
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  padding: 9px 11px;
+  width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+}
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--green);
+}
+select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%235a5956'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 28px; }
+textarea { resize: none; }
+input::placeholder, textarea::placeholder { color: var(--text3); }
+
+.btn {
+  width: 100%;
+  padding: 11px;
+  border-radius: 8px;
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  letter-spacing: .06em;
+  cursor: pointer;
+  border: 1px solid var(--border2);
+  background: var(--bg3);
+  color: var(--text2);
+  transition: all .15s;
+}
+.btn:active { transform: scale(0.98); }
+.btn-primary {
+  background: var(--green);
+  border-color: var(--green);
+  color: #0e0f0d;
+  font-weight: 500;
+}
+.btn-sm {
+  width: auto;
+  padding: 6px 12px;
+  font-size: 11px;
+}
+
+/* ── SCHEDULE WEEK ── */
+.week-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 6px;
+}
+.week-row.current {
+  border-color: var(--green-border);
+  background: var(--green-dim);
+}
+.week-num {
+  font-family: 'Fraunces', serif;
+  font-size: 20px;
+  font-weight: 300;
+  color: var(--text3);
+  width: 32px;
+  flex-shrink: 0;
+  text-align: center;
+}
+.week-row.current .week-num { color: var(--green); }
+.week-info { flex: 1; min-width: 0; }
+.week-target { font-size: 13px; color: var(--text); margin-bottom: 2px; }
+.week-dates { font-size: 10px; color: var(--text3); }
+.week-badge {
+  font-size: 10px;
+  padding: 3px 8px;
+  border-radius: 20px;
+  background: var(--bg4);
+  color: var(--text3);
+  white-space: nowrap;
+}
+.week-row.current .week-badge { background: var(--green-border); color: var(--green); }
+
+/* ── CHART ── */
+.chart-wrap { position: relative; width: 100%; margin-bottom: 16px; }
+
+/* ── PHASE SECTION ── */
+.phase-header {
+  font-size: 10px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin: 20px 0 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* ── EMPTY ── */
+.empty {
+  text-align: center;
+  padding: 32px 16px;
+  color: var(--text3);
+  font-size: 12px;
+}
+
+/* ── TODAY ALERT ── */
+.today-alert {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 14px;
+  margin-bottom: 14px;
+}
+.today-alert-title {
+  font-family: 'Fraunces', serif;
+  font-size: 16px;
+  font-weight: 300;
+  color: var(--text);
+  margin-bottom: 10px;
+}
+.today-alert-title span { color: var(--green); font-style: italic; }
+.target-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--border);
+}
+.target-row:last-child { border-bottom: none; }
+.target-key { font-size: 11px; color: var(--text3); }
+.target-val { font-size: 12px; color: var(--text); font-weight: 500; }
+.target-val.green { color: var(--green); }
+.target-val.amber { color: var(--amber); }
+
+/* ── SCROLL HINT ── */
+::-webkit-scrollbar { width: 0; height: 0; }
+
+/* ── MOBILE SAFE AREA ── */
+.main { padding-bottom: env(safe-area-inset-bottom, 32px); }
+
+</style>
+</head>
+<body>
+
+<div class="app-header">
+  <div class="header-top">
+    <div class="app-title">Kili <span>Tracker</span></div>
+    <div class="summit-badge">Summit <strong id="days-out">—</strong> days out</div>
+  </div>
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('today')">Today</div>
+    <div class="tab" onclick="switchTab('log')">Log</div>
+    <div class="tab" onclick="switchTab('schedule')">Schedule</div>
+    <div class="tab" onclick="switchTab('progress')">Progress</div>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- SYNC BAR -->
+  <div class="sync-bar" id="sync-bar">
+    <div class="sync-dot" id="sync-dot"></div>
+    <span id="sync-status">Not connected to Google Drive</span>
+    <button class="sync-connect-btn" id="sync-btn" onclick="handleSyncBtn()">Connect</button>
+  </div>
+
+  <!-- ── TODAY ── -->
+  <div id="view-today" class="view active">
+    <div class="today-alert" id="today-targets"></div>
+    <div class="metrics-row" id="today-metrics"></div>
+    <div class="section-title">This week</div>
+    <div id="week-progress"></div>
+    <div class="section-title">Recent sessions</div>
+    <div id="recent-log"></div>
+  </div>
+
+  <!-- ── LOG ── -->
+  <div id="view-log" class="view">
+    <div class="form-card">
+      <div class="form-row">
+        <div class="form-col">
+          <span class="form-label">Session type</span>
+          <select id="f-type" onchange="updateForm()">
+            <option value="stair">Stairmaster</option>
+            <option value="pack">Pack walk</option>
+            <option value="lift">Lifting</option>
+            <option value="hike">Hike</option>
+            <option value="tread">Incline treadmill</option>
+          </select>
+        </div>
+        <div class="form-col">
+          <span class="form-label">Date</span>
+          <input type="date" id="f-date">
+        </div>
+      </div>
+
+      <!-- STAIR -->
+      <div id="fields-stair">
+        <div class="form-row">
+          <div class="form-col"><span class="form-label">Duration (min)</span><input type="number" id="s-dur" placeholder="25" min="1" max="120"></div>
+          <div class="form-col"><span class="form-label">Level</span>
+            <select id="s-level"><option>4</option><option>5</option><option selected>6</option><option>7</option></select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-col"><span class="form-label">Avg HR (bpm)</span><input type="number" id="s-hr" placeholder="145"></div>
+          <div class="form-col"><span class="form-label">Calories</span><input type="number" id="s-cal" placeholder="218"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-col"><span class="form-label">Zone 2 (min)</span><input type="number" id="s-z2" placeholder="0" min="0"></div>
+          <div class="form-col"><span class="form-label">Zone 3 (min)</span><input type="number" id="s-z3" placeholder="0" min="0"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-col"><span class="form-label">Zone 4 (min)</span><input type="number" id="s-z4" placeholder="0" min="0"></div>
+          <div class="form-col"><span class="form-label">Zone 5 (min)</span><input type="number" id="s-z5" placeholder="0" min="0"></div>
+        </div>
+      </div>
+
+      <!-- PACK -->
+      <div id="fields-pack" style="display:none">
+        <div class="form-row">
+          <div class="form-col"><span class="form-label">Duration (min)</span><input type="number" id="p-dur" placeholder="60" min="1"></div>
+          <div class="form-col"><span class="form-label">Pack weight (lbs)</span><input type="number" id="p-weight" placeholder="10" min="0" max="35" step="2.5"></div>
+        </div>
+      </div>
+
+      <!-- LIFT -->
+      <div id="fields-lift" style="display:none">
+        <div class="form-row">
+          <div class="form-col"><span class="form-label">Type</span>
+            <select id="l-type"><option value="lower">Lower body</option><option value="upper">Upper body</option></select>
+          </div>
+          <div class="form-col"><span class="form-label">Duration (min)</span><input type="number" id="l-dur" placeholder="60" min="1"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-col"><span class="form-label">Avg HR (bpm)</span><input type="number" id="l-hr" placeholder="130"></div>
+          <div class="form-col"></div>
+        </div>
+      </div>
+
+      <!-- HIKE -->
+      <div id="fields-hike" style="display:none">
+        <div class="form-row">
+          <div class="form-col"><span class="form-label">Duration (hrs)</span><input type="number" id="h-dur" placeholder="3" min="0.5" step="0.5"></div>
+          <div class="form-col"><span class="form-label">Elevation gain (ft)</span><input type="number" id="h-elev" placeholder="1000"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-col"><span class="form-label">Pack weight (lbs)</span><input type="number" id="h-weight" placeholder="20"></div>
+          <div class="form-col"><span class="form-label">Avg HR (bpm)</span><input type="number" id="h-hr" placeholder="145"></div>
+        </div>
+      </div>
+
+      <!-- TREADMILL -->
+      <div id="fields-tread" style="display:none">
+        <div class="form-row">
+          <div class="form-col"><span class="form-label">Duration (min)</span><input type="number" id="t-dur" placeholder="30" min="1"></div>
+          <div class="form-col"><span class="form-label">Incline (%)</span><input type="number" id="t-incline" placeholder="10" min="0" max="40"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-col"><span class="form-label">Avg HR (bpm)</span><input type="number" id="t-hr" placeholder="140"></div>
+          <div class="form-col"></div>
+        </div>
+      </div>
+
+      <div class="form-col" style="margin-bottom:12px">
+        <span class="form-label">Notes</span>
+        <textarea id="f-notes" rows="2" placeholder="Optional. How did it feel?"></textarea>
+      </div>
+      <button class="btn btn-primary" onclick="saveSession()">Save session</button>
+    </div>
+
+    <div class="section-title">All sessions</div>
+    <div id="all-sessions"></div>
+  </div>
+
+  <!-- ── SCHEDULE ── -->
+  <div id="view-schedule" class="view">
+    <div id="schedule-list"></div>
+  </div>
+
+  <!-- ── PROGRESS ── -->
+  <div id="view-progress" class="view">
+    <div class="metrics-row" id="progress-metrics"></div>
+
+    <div class="section-title">Stairmaster — weekly volume</div>
+    <div class="chart-wrap" style="height:160px">
+      <canvas id="chart-vol" role="img" aria-label="Weekly stairmaster minutes">Weekly stairmaster volume chart.</canvas>
+    </div>
+
+    <div class="section-title">Heart rate trend (stairmaster)</div>
+    <div class="chart-wrap" style="height:140px">
+      <canvas id="chart-hr" role="img" aria-label="Average heart rate per stairmaster session">Heart rate per session vs 135-145 target.</canvas>
+    </div>
+
+    <div class="section-title">Zone distribution (stairmaster)</div>
+    <div id="zone-dist"></div>
+
+    <div class="section-title">Pack weight progression</div>
+    <div class="chart-wrap" style="height:140px">
+      <canvas id="chart-pack" role="img" aria-label="Pack weight over time">Pack weight progression chart.</canvas>
+    </div>
+  </div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+// ─── CONSTANTS ───────────────────────────────────────────────────────────────
+const PLAN_START = new Date('2026-05-01');
+const SUMMIT     = new Date('2027-02-01');
+const CLIENT_ID  = window.GOOGLE_CLIENT_ID || '';
+const SCOPES     = 'https://www.googleapis.com/auth/drive.file';
+const FILE_NAME  = 'kili-tracker-data.json';
+
+// ─── PLAN LOGIC ──────────────────────────────────────────────────────────────
+function currentWeek() {
+  const ms = new Date() - PLAN_START;
+  return Math.max(1, Math.ceil(ms / (7 * 86400000)));
+}
+
+function targetDuration(week) {
+  if (week >= 29) return 30;
+  if (week >= 27) return 35;
+  if (week >= 25) return 50;
+  const pair = Math.ceil(Math.min(week, 24) / 2);
+  return Math.min(25 + (pair - 1) * 5, 80);
+}
+
+function nextIncrease(week) {
+  if (week >= 25) return null;
+  const nextPair = Math.ceil(week / 2) + 1;
+  const nextWeek = (nextPair - 1) * 2 + 1;
+  const nextDur  = Math.min(25 + (nextPair - 1) * 5, 80);
+  const d = new Date(PLAN_START);
+  d.setDate(d.getDate() + (nextWeek - 1) * 7);
+  return { week: nextWeek, duration: nextDur, date: d };
+}
+
+function targetLevel(week) {
+  if (week >= 25) return '5';
+  if (targetDuration(week) >= 50) return '5';
+  if (targetDuration(week) >= 45) return '5–6';
+  return '6';
+}
+
+function targetPack(week) {
+  const targets = [10, 12.5, 15, 17.5, 20];
+  return targets[Math.min(week - 1, targets.length - 1)];
+}
+
+function nextPackIncrease(week) {
+  if (week >= 5) return null;
+  const nextWeek = week + 1;
+  const nextWeight = [10, 12.5, 15, 17.5, 20][Math.min(nextWeek - 1, 4)];
+  const d = new Date(PLAN_START);
+  d.setDate(d.getDate() + (nextWeek - 1) * 7);
+  return { week: nextWeek, weight: nextWeight, date: d };
+}
+
+function phase(week) {
+  if (week <= 12) return { n: 1, label: 'Phase 1 — base building' };
+  if (week <= 24) return { n: 2, label: 'Phase 2 — specific endurance' };
+  if (week <= 28) return { n: 3, label: 'Taper' };
+  return { n: 4, label: 'Phase 4 — stay sharp' };
+}
+
+function weekRange(week) {
+  const s = new Date(PLAN_START); s.setDate(s.getDate() + (week - 1) * 7);
+  const e = new Date(s); e.setDate(e.getDate() + 6);
+  return { start: s, end: e };
+}
+
+function fmtDate(d) {
+  return new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+
+function fmtDateShort(d) {
+  return new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: '2-digit' });
+}
+
+function daysToSummit() {
+  return Math.max(0, Math.ceil((SUMMIT - new Date()) / 86400000));
+}
+
+// ─── DATA STORE ──────────────────────────────────────────────────────────────
+let store = { sessions: [] };
+let driveFileId = null;
+let gisClient   = null;
+let gapiReady   = false;
+let syncState   = 'disconnected'; // disconnected | connected | syncing | error
+
+function loadLocal() {
+  try { store = JSON.parse(localStorage.getItem('kili_store') || '{"sessions":[]}'); } catch(e) { store = { sessions: [] }; }
+}
+
+function saveLocal() {
+  try { localStorage.setItem('kili_store', JSON.stringify(store)); } catch(e) {}
+}
+
+function sessions() { return store.sessions || []; }
+
+function addSession(s) {
+  store.sessions.unshift(s);
+  saveLocal();
+  syncToDrive();
+}
+
+// ─── GOOGLE DRIVE SYNC ───────────────────────────────────────────────────────
+function setSyncState(state, msg) {
+  syncState = state;
+  const dot = document.getElementById('sync-dot');
+  const status = document.getElementById('sync-status');
+  const btn = document.getElementById('sync-btn');
+  dot.className = 'sync-dot ' + (state === 'connected' ? 'connected' : state === 'syncing' ? 'syncing' : state === 'error' ? 'error' : '');
+  status.textContent = msg;
+  btn.textContent = state === 'disconnected' ? 'Connect' : state === 'error' ? 'Retry' : '✓';
+  btn.style.display = (state === 'connected' || state === 'syncing') ? 'none' : 'block';
+}
+
+function handleSyncBtn() {
+  if (!CLIENT_ID) {
+    alert('Google Client ID not configured. See setup instructions in the README.');
+    return;
+  }
+  if (typeof google === 'undefined') { loadGIS(); return; }
+  gisClient.requestAccessToken();
+}
+
+function loadGIS() {
+  if (typeof google !== 'undefined') { initGIS(); return; }
+  const s = document.createElement('script');
+  s.src = 'https://accounts.google.com/gsi/client';
+  s.onload = initGIS;
+  document.head.appendChild(s);
+  const s2 = document.createElement('script');
+  s2.src = 'https://apis.google.com/js/api.js';
+  s2.onload = () => gapi.load('client', () => { gapiReady = true; });
+  document.head.appendChild(s2);
+}
+
+function initGIS() {
+  gisClient = google.accounts.oauth2.initTokenClient({
+    client_id: CLIENT_ID,
+    scope: SCOPES,
+    callback: async (resp) => {
+      if (resp.error) { setSyncState('error', 'Auth failed'); return; }
+      setSyncState('syncing', 'Connecting...');
+      await gapi.client.init({ discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest'] });
+      await findOrCreateFile();
+      await pullFromDrive();
+      setSyncState('connected', 'Synced with Google Drive');
+      renderAll();
+    }
+  });
+}
+
+async function findOrCreateFile() {
+  const resp = await gapi.client.drive.files.list({ q: `name='${FILE_NAME}' and trashed=false`, fields: 'files(id,name)' });
+  const files = resp.result.files;
+  if (files && files.length) {
+    driveFileId = files[0].id;
+  } else {
+    const create = await gapi.client.drive.files.create({ resource: { name: FILE_NAME, mimeType: 'application/json' }, fields: 'id' });
+    driveFileId = create.result.id;
+  }
+}
+
+async function pullFromDrive() {
+  if (!driveFileId) return;
+  try {
+    const resp = await gapi.client.drive.files.get({ fileId: driveFileId, alt: 'media' });
+    const remote = typeof resp.result === 'string' ? JSON.parse(resp.result) : resp.result;
+    if (remote && remote.sessions) {
+      const merged = mergeSessions(store.sessions, remote.sessions);
+      store.sessions = merged;
+      saveLocal();
+    }
+  } catch(e) {}
+}
+
+function mergesessions(a, b) { return mergeSessions(a, b); }
+function mergeSessions(a, b) {
+  const map = {};
+  [...a, ...b].forEach(s => { map[s.id] = s; });
+  return Object.values(map).sort((x, y) => new Date(y.date) - new Date(x.date));
+}
+
+async function syncToDrive() {
+  if (!driveFileId) return;
+  setSyncState('syncing', 'Saving...');
+  try {
+    const body = JSON.stringify(store);
+    await gapi.client.request({
+      path: `/upload/drive/v3/files/${driveFileId}`,
+      method: 'PATCH',
+      params: { uploadType: 'media' },
+      headers: { 'Content-Type': 'application/json' },
+      body
+    });
+    setSyncState('connected', 'Saved · ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+  } catch(e) {
+    setSyncState('error', 'Sync failed — data saved locally');
+  }
+}
+
+// ─── UI SWITCHING ─────────────────────────────────────────────────────────────
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach((t, i) => {
+    t.classList.toggle('active', ['today','log','schedule','progress'][i] === name);
+  });
+  document.querySelectorAll('.view').forEach(v => {
+    v.classList.toggle('active', v.id === 'view-' + name);
+  });
+  if (name === 'schedule') renderSchedule();
+  if (name === 'progress') renderProgress();
+  if (name === 'log') renderAllSessions();
+}
+
+// ─── FORM ────────────────────────────────────────────────────────────────────
+function updateForm() {
+  const t = document.getElementById('f-type').value;
+  ['stair','pack','lift','hike','tread'].forEach(id => {
+    document.getElementById('fields-' + id).style.display = t === id ? 'block' : 'none';
+  });
+}
+
+function clearForm() {
+  ['s-dur','s-hr','s-cal','s-z2','s-z3','s-z4','s-z5',
+   'p-dur','p-weight','l-dur','l-hr','h-dur','h-elev','h-weight','h-hr',
+   't-dur','t-incline','t-hr','f-notes'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value = '';
+  });
+}
+
+function saveSession() {
+  const type = document.getElementById('f-type').value;
+  const date = document.getElementById('f-date').value || new Date().toISOString().split('T')[0];
+  const notes = document.getElementById('f-notes').value.trim();
+  const id = Date.now() + '-' + Math.random().toString(36).slice(2,6);
+
+  let s = { id, type, date, notes };
+
+  if (type === 'stair') {
+    s.duration = +document.getElementById('s-dur').value || 0;
+    s.level    = document.getElementById('s-level').value;
+    s.hr       = +document.getElementById('s-hr').value || 0;
+    s.cal      = +document.getElementById('s-cal').value || 0;
+    s.z2       = +document.getElementById('s-z2').value || 0;
+    s.z3       = +document.getElementById('s-z3').value || 0;
+    s.z4       = +document.getElementById('s-z4').value || 0;
+    s.z5       = +document.getElementById('s-z5').value || 0;
+    if (!s.duration) { alert('Enter a duration.'); return; }
+  } else if (type === 'pack') {
+    s.duration = +document.getElementById('p-dur').value || 0;
+    s.weight   = +document.getElementById('p-weight').value || 0;
+    if (!s.duration) { alert('Enter a duration.'); return; }
+  } else if (type === 'lift') {
+    s.liftType = document.getElementById('l-type').value;
+    s.duration = +document.getElementById('l-dur').value || 0;
+    s.hr       = +document.getElementById('l-hr').value || 0;
+    if (!s.duration) { alert('Enter a duration.'); return; }
+  } else if (type === 'hike') {
+    s.duration = +document.getElementById('h-dur').value || 0;
+    s.elev     = +document.getElementById('h-elev').value || 0;
+    s.weight   = +document.getElementById('h-weight').value || 0;
+    s.hr       = +document.getElementById('h-hr').value || 0;
+    if (!s.duration) { alert('Enter a duration.'); return; }
+  } else if (type === 'tread') {
+    s.duration = +document.getElementById('t-dur').value || 0;
+    s.incline  = +document.getElementById('t-incline').value || 0;
+    s.hr       = +document.getElementById('t-hr').value || 0;
+    if (!s.duration) { alert('Enter a duration.'); return; }
+  }
+
+  addSession(s);
+  clearForm();
+  renderAll();
+  switchTab('today');
+}
+
+// ─── SESSION CARD HTML ────────────────────────────────────────────────────────
+function sessionCard(s) {
+  const typeLabels = { stair:'Stairmaster', pack:'Pack walk', lift:'Lifting', hike:'Hike', tread:'Incline treadmill' };
+  const tagClass   = { stair:'tag-stair', pack:'tag-pack', lift:'tag-lift', hike:'tag-hike', tread:'tag-treadmill' };
+
+  let stats = '';
+  let zonebar = '';
+
+  if (s.type === 'stair') {
+    stats = `<div class="stats-grid">
+      <div><div class="stat-label">Duration</div><div class="stat-value">${s.duration} min</div></div>
+      <div><div class="stat-label">Level</div><div class="stat-value">${s.level}</div></div>
+      <div><div class="stat-label">Avg HR</div><div class="stat-value">${s.hr || '—'} bpm</div></div>
+      <div><div class="stat-label">Calories</div><div class="stat-value">${s.cal || '—'}</div></div>
+      <div><div class="stat-label">Z4+Z5</div><div class="stat-value">${(s.z4||0)+(s.z5||0)} min</div></div>
+      <div><div class="stat-label">Z2+Z3</div><div class="stat-value">${(s.z2||0)+(s.z3||0)} min</div></div>
+    </div>`;
+    const total = (s.z2||0)+(s.z3||0)+(s.z4||0)+(s.z5||0);
+    if (total > 0) {
+      zonebar = `<div class="zone-bar">
+        <div class="zone-seg" style="flex:${s.z2||0};background:#378ADD"></div>
+        <div class="zone-seg" style="flex:${s.z3||0};background:#1D9E75"></div>
+        <div class="zone-seg" style="flex:${s.z4||0};background:#BA7517"></div>
+        <div class="zone-seg" style="flex:${s.z5||0};background:#A32D2D"></div>
+      </div>`;
+    }
+  } else if (s.type === 'pack') {
+    stats = `<div class="stats-grid">
+      <div><div class="stat-label">Duration</div><div class="stat-value">${s.duration} min</div></div>
+      <div><div class="stat-label">Weight</div><div class="stat-value">${s.weight} lbs</div></div>
+      <div></div>
+    </div>`;
+  } else if (s.type === 'lift') {
+    stats = `<div class="stats-grid">
+      <div><div class="stat-label">Type</div><div class="stat-value">${s.liftType === 'lower' ? 'Lower' : 'Upper'}</div></div>
+      <div><div class="stat-label">Duration</div><div class="stat-value">${s.duration} min</div></div>
+      <div><div class="stat-label">Avg HR</div><div class="stat-value">${s.hr || '—'} bpm</div></div>
+    </div>`;
+  } else if (s.type === 'hike') {
+    stats = `<div class="stats-grid">
+      <div><div class="stat-label">Duration</div><div class="stat-value">${s.duration} hrs</div></div>
+      <div><div class="stat-label">Elevation</div><div class="stat-value">${s.elev ? s.elev.toLocaleString() + ' ft' : '—'}</div></div>
+      <div><div class="stat-label">Pack</div><div class="stat-value">${s.weight || '—'} lbs</div></div>
+      <div><div class="stat-label">Avg HR</div><div class="stat-value">${s.hr || '—'} bpm</div></div>
+    </div>`;
+  } else if (s.type === 'tread') {
+    stats = `<div class="stats-grid">
+      <div><div class="stat-label">Duration</div><div class="stat-value">${s.duration} min</div></div>
+      <div><div class="stat-label">Incline</div><div class="stat-value">${s.incline}%</div></div>
+      <div><div class="stat-label">Avg HR</div><div class="stat-value">${s.hr || '—'} bpm</div></div>
+    </div>`;
+  }
+
+  return `<div class="card">
+    <div class="card-header">
+      <div class="card-date">${fmtDate(s.date)}</div>
+      <span class="tag ${tagClass[s.type]}">${typeLabels[s.type]}</span>
+    </div>
+    ${stats}
+    ${zonebar}
+    ${s.notes ? `<div class="card-note">${s.notes}</div>` : ''}
+  </div>`;
+}
+
+// ─── RENDER TODAY ─────────────────────────────────────────────────────────────
+function renderToday() {
+  const week = currentWeek();
+  const dur  = targetDuration(week);
+  const lvl  = targetLevel(week);
+  const pack = targetPack(week);
+  const ni   = nextIncrease(week);
+  const np   = nextPackIncrease(week);
+
+  document.getElementById('days-out').textContent = daysToSummit();
+
+  // Today targets
+  let niText = ni ? `↑ to ${ni.duration} min from ${fmtDate(ni.date)}` : 'Peak duration reached';
+  let npText = np ? `↑ to ${np.weight} lbs from ${fmtDate(np.date)}` : 'Hold at 20–22 lbs through October';
+
+  document.getElementById('today-targets').innerHTML = `
+    <div class="today-alert-title">Week <span>${week}</span> targets</div>
+    <div class="target-row">
+      <span class="target-key">Stairmaster duration</span>
+      <span class="target-val green">${dur} min × 2</span>
+    </div>
+    <div class="target-row">
+      <span class="target-key">Stairmaster level</span>
+      <span class="target-val">${lvl}</span>
+    </div>
+    <div class="target-row">
+      <span class="target-key">Target HR zone</span>
+      <span class="target-val">135–145 bpm</span>
+    </div>
+    <div class="target-row">
+      <span class="target-key">Next duration increase</span>
+      <span class="target-val amber">${niText}</span>
+    </div>
+    <div class="target-row">
+      <span class="target-key">Pack weight</span>
+      <span class="target-val green">${pack} lbs</span>
+    </div>
+    <div class="target-row">
+      <span class="target-key">Next pack increase</span>
+      <span class="target-val amber">${npText}</span>
+    </div>`;
+
+  // This week counts
+  const { start, end } = weekRange(week);
+  const thisWeek = sessions().filter(s => {
+    const d = new Date(s.date); return d >= start && d <= end;
+  });
+  const stairCount = thisWeek.filter(s => s.type === 'stair').length;
+  const packCount  = thisWeek.filter(s => s.type === 'pack').length;
+  const liftCount  = thisWeek.filter(s => s.type === 'lift').length;
+
+  document.getElementById('today-metrics').innerHTML = `
+    <div class="metric-card">
+      <div class="metric-label">Stairmaster</div>
+      <div class="metric-value ${stairCount >= 2 ? 'green' : ''}">${stairCount}<span style="font-size:14px;color:var(--text3)">/2</span></div>
+      <div class="metric-sub">this week</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Lifting</div>
+      <div class="metric-value">${liftCount}</div>
+      <div class="metric-sub">sessions</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Pack walks</div>
+      <div class="metric-value ${packCount >= 5 ? 'green' : ''}">${packCount}<span style="font-size:14px;color:var(--text3)">/7</span></div>
+      <div class="metric-sub">this week</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Days to summit</div>
+      <div class="metric-value amber">${daysToSummit()}</div>
+      <div class="metric-sub">Feb 1, 2027</div>
+    </div>`;
+
+  // Week progress bars
+  const stairMins  = thisWeek.filter(s=>s.type==='stair').reduce((a,s)=>a+s.duration,0);
+  const targetMins = dur * 2;
+  document.getElementById('week-progress').innerHTML = `
+    <div class="prog-wrap">
+      <div class="prog-label"><span>Stairmaster volume</span><span>${stairMins} / ${targetMins} min</span></div>
+      <div class="prog-track"><div class="prog-fill" style="width:${Math.min(100,Math.round(stairMins/targetMins*100))}%;background:var(--blue)"></div></div>
+    </div>
+    <div class="prog-wrap">
+      <div class="prog-label"><span>Stairmaster sessions</span><span>${stairCount} / 2</span></div>
+      <div class="prog-track"><div class="prog-fill" style="width:${Math.min(100,stairCount/2*100)}%;background:var(--blue)"></div></div>
+    </div>
+    <div class="prog-wrap">
+      <div class="prog-label"><span>Pack walks</span><span>${packCount} / 7</span></div>
+      <div class="prog-track"><div class="prog-fill" style="width:${Math.min(100,packCount/7*100)}%;background:var(--amber)"></div></div>
+    </div>`;
+
+  // Recent
+  const recent = sessions().slice(0, 4);
+  document.getElementById('recent-log').innerHTML = recent.length
+    ? recent.map(sessionCard).join('')
+    : '<div class="empty">No sessions logged yet.<br>Tap Log to add your first one.</div>';
+}
+
+// ─── RENDER ALL SESSIONS ──────────────────────────────────────────────────────
+function renderAllSessions() {
+  const all = sessions();
+  document.getElementById('all-sessions').innerHTML = all.length
+    ? all.map(sessionCard).join('')
+    : '<div class="empty">No sessions yet.</div>';
+}
+
+// ─── RENDER SCHEDULE ──────────────────────────────────────────────────────────
+function renderSchedule() {
+  const cw = currentWeek();
+  let html = '';
+  let lastPhase = 0;
+
+  for (let w = 1; w <= 32; w++) {
+    const p = phase(w);
+    if (p.n !== lastPhase) {
+      html += `<div class="phase-header">${p.label}</div>`;
+      lastPhase = p.n;
+    }
+    const dur   = targetDuration(w);
+    const lvl   = targetLevel(w);
+    const { start, end } = weekRange(w);
+    const sess  = w >= 29 ? '1×' : '2×';
+    const isCur = w === cw;
+
+    html += `<div class="week-row ${isCur ? 'current' : ''}">
+      <div class="week-num">${w}</div>
+      <div class="week-info">
+        <div class="week-target">${dur} min · Level ${lvl} · ${sess}/week</div>
+        <div class="week-dates">${fmtDate(start)} – ${fmtDate(end)}</div>
+      </div>
+      <div class="week-badge">${isCur ? 'now' : fmtDate(start)}</div>
+    </div>`;
+  }
+  document.getElementById('schedule-list').innerHTML = html;
+
+  // Scroll current week into view
+  setTimeout(() => {
+    const rows = document.querySelectorAll('.week-row.current');
+    if (rows.length) rows[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 100);
+}
+
+// ─── RENDER PROGRESS ─────────────────────────────────────────────────────────
+let charts = {};
+
+function renderProgress() {
+  const all   = sessions();
+  const stair = all.filter(s => s.type === 'stair');
+  const pack  = all.filter(s => s.type === 'pack');
+  const hikes = all.filter(s => s.type === 'hike');
+  const lifts = all.filter(s => s.type === 'lift');
+
+  const totalStairMins = stair.reduce((a,s)=>a+s.duration,0);
+  const avgHR = stair.filter(s=>s.hr).length
+    ? Math.round(stair.filter(s=>s.hr).reduce((a,s)=>a+s.hr,0)/stair.filter(s=>s.hr).length) : 0;
+
+  document.getElementById('progress-metrics').innerHTML = `
+    <div class="metric-card">
+      <div class="metric-label">Stairmaster sessions</div>
+      <div class="metric-value">${stair.length}</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Total stair minutes</div>
+      <div class="metric-value">${totalStairMins}</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Avg stair HR</div>
+      <div class="metric-value ${avgHR && avgHR <= 145 && avgHR >= 135 ? 'green' : ''}">${avgHR || '—'}</div>
+      <div class="metric-sub">target 135–145</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Hikes logged</div>
+      <div class="metric-value">${hikes.length}</div>
+    </div>`;
+
+  // Weekly volume chart
+  const weeklyVol = {};
+  stair.forEach(s => {
+    const wk = Math.ceil((new Date(s.date) - PLAN_START) / (7*86400000));
+    weeklyVol[wk] = (weeklyVol[wk] || 0) + s.duration;
+  });
+  const wkKeys = Object.keys(weeklyVol).map(Number).sort((a,b)=>a-b);
+
+  buildChart('chart-vol', 'bar', {
+    labels: wkKeys.map(w => 'Wk ' + w),
+    datasets: [{ label: 'Min', data: wkKeys.map(w=>weeklyVol[w]), backgroundColor: '#6b9fd4', borderRadius: 3 }]
+  }, { scales: { y: { beginAtZero:true, ticks:{ color:'#5a5956', callback:v=>v+'m' }, grid:{color:'rgba(255,255,255,0.04)'} }, x:{ticks:{color:'#5a5956',font:{size:10}},grid:{display:false}} }, plugins:{legend:{display:false}} });
+
+  // HR trend
+  const hrData = stair.filter(s=>s.hr).slice().reverse();
+  buildChart('chart-hr', 'line', {
+    labels: hrData.map(s => fmtDate(s.date)),
+    datasets: [
+      { label:'HR', data:hrData.map(s=>s.hr), borderColor:'#c96b5a', backgroundColor:'transparent', pointRadius:3, tension:.3 },
+      { label:'Hi', data:hrData.map(()=>145), borderColor:'rgba(124,189,107,0.4)', borderDash:[4,4], pointRadius:0 },
+      { label:'Lo', data:hrData.map(()=>135), borderColor:'rgba(124,189,107,0.4)', borderDash:[4,4], pointRadius:0 },
+    ]
+  }, { scales: { y:{min:100,max:200,ticks:{color:'#5a5956'},grid:{color:'rgba(255,255,255,0.04)'}}, x:{ticks:{color:'#5a5956',font:{size:10}},grid:{display:false}} }, plugins:{legend:{display:false}} });
+
+  // Zone distribution
+  const totalZ = ['z2','z3','z4','z5'].map(z => stair.reduce((a,s)=>a+(s[z]||0),0));
+  const totalZ_all = totalZ.reduce((a,b)=>a+b,0);
+  const zLabels = ['Zone 2 — aerobic', 'Zone 3 — tempo', 'Zone 4 — threshold', 'Zone 5 — max'];
+  const zColors = ['#6b9fd4','#7cbd6b','#d4a843','#c96b5a'];
+  const zNotes  = ['Build time here for base endurance','Transitional — some is fine','1× per week max on intensity day','Avoid on long sessions'];
+  document.getElementById('zone-dist').innerHTML = totalZ_all > 0
+    ? totalZ.map((z,i) => `<div class="prog-wrap">
+        <div class="prog-label"><span>${zLabels[i]}</span><span>${z} min (${Math.round(z/totalZ_all*100)}%)</span></div>
+        <div class="prog-track"><div class="prog-fill" style="width:${Math.round(z/totalZ_all*100)}%;background:${zColors[i]}"></div></div>
+        <div style="font-size:10px;color:var(--text3);margin-top:2px">${zNotes[i]}</div>
+      </div>`).join('')
+    : '<div class="empty">Log zone data to see distribution.</div>';
+
+  // Pack weight
+  const packChron = pack.filter(s=>s.weight).slice().reverse();
+  buildChart('chart-pack', 'line', {
+    labels: packChron.map(s => fmtDate(s.date)),
+    datasets: [{ label:'lbs', data:packChron.map(s=>s.weight), borderColor:'#d4a843', backgroundColor:'transparent', pointRadius:3, tension:.2 }]
+  }, { scales:{ y:{beginAtZero:false,ticks:{color:'#5a5956'},grid:{color:'rgba(255,255,255,0.04)'}}, x:{ticks:{color:'#5a5956',font:{size:10}},grid:{display:false}} }, plugins:{legend:{display:false}} });
+}
+
+function buildChart(id, type, data, opts) {
+  if (charts[id]) { charts[id].destroy(); }
+  const canvas = document.getElementById(id);
+  if (!canvas) return;
+  charts[id] = new Chart(canvas, {
+    type,
+    data,
+    options: { responsive:true, maintainAspectRatio:false, ...opts,
+      plugins: { legend:{display:false}, ...(opts.plugins||{}) } }
+  });
+}
+
+// ─── RENDER ALL ───────────────────────────────────────────────────────────────
+function renderAll() {
+  renderToday();
+  if (document.getElementById('view-progress').classList.contains('active')) renderProgress();
+  if (document.getElementById('view-schedule').classList.contains('active')) renderSchedule();
+  if (document.getElementById('view-log').classList.contains('active')) renderAllSessions();
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+document.getElementById('f-date').value = new Date().toISOString().split('T')[0];
+loadLocal();
+setSyncState('disconnected', 'Not connected — data saved locally');
+renderAll();
+
+// Auto-load GIS if CLIENT_ID is set
+if (CLIENT_ID) { loadGIS(); }
+</script>
+</body>
+</html>
