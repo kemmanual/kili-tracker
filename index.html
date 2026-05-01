@@ -338,7 +338,7 @@ function thisCalendarWeek(){
   return{start:mon,end:sun};
 }
 
-function fmtDate(d){const p=String(d).split('-');if(p.length===3)return new Date(+p[0],+p[1]-1,+p[2]).toLocaleDateString('en-US',{month:'short',day:'numeric'});return new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric'});}
+function fmtDate(d){const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];const p=String(d).split('T')[0].split('-');if(p.length===3)return months[+p[1]-1]+' '+String(+p[2]);return new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric'});}
 function daysToSummit(){return Math.max(0,Math.ceil((SUMMIT-new Date())/86400000));}
 
 // ── DATA ───────────────────────────────────────────────────────────────────
@@ -570,7 +570,8 @@ function renderToday(){
   // Use real calendar week Mon-Sun
   const{start,end}=thisCalendarWeek();
   const tw=sessions().filter(s=>{
-    const d=new Date(s.date+'T12:00:00');
+    const p=String(s.date).split('T')[0].split('-');
+    const d=new Date(+p[0],+p[1]-1,+p[2]);
     return d>=start&&d<=end;
   });
   const sc=tw.filter(s=>s.type==='stair').length;
